@@ -16,6 +16,7 @@ TRIES = 1
 
 def checksum(string):
 # In this function we make the checksum of our packet
+    string = bytearray(string)
     csum = 0
     countTo = (len(string) // 2) * 2
     count = 0
@@ -45,12 +46,26 @@ def build_packet():
 
     # Make the header in a similar way to the ping exercise.
     # Append checksum to the header.
+    myChecksum = 0
+    myID = os.getpid() & 0xFFFF
 
     # Don’t send the packet yet , just return the final packet in this function.
     #Fill in end
+    header = struct.pack("bbHHh", ICMP_ECHO_REQUEST, 0, myChecksum, myID, 1)
+    # header = struct.pack("!HHHH", ICMP_ECHO_REQUEST, 0, myChecksum, pid, 1)
+    data = struct.pack("d", time.time())
+    
+    # Calculate the checksum on the data and the dummy header
+    # Append checksum to the header.
+    myChecksum = checksum(header + data)
+    if sys.platform == 'darwin':
+        myChecksum = socket.htons(myChecksum) & 0xffff
+        #Convert 16-bit integers from host to network byte order.
+    else:
+        myChecksum = htons(myChecksum)
 
     # So the function ending should look like this
-
+    header = struct.pack("bbHHh", ICMP_ECHO_REQUEST, 0, myChecksum, myID, 1)
     packet = header + data
     return packet
 
@@ -65,6 +80,9 @@ def get_route(hostname):
 
             #Fill in start
             # Make a raw socket named mySocket
+            icmp = socket.getprotobyname("icmp")
+            # mySocket = socket.socket(socket.AF_INET, socket.SOCK_RAW, icmp)
+            mySocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, icmp)
             #Fill in end
 
             mySocket.setsockopt(IPPROTO_IP, IP_TTL, struct.pack('I', ttl))
@@ -76,6 +94,7 @@ def get_route(hostname):
                 startedSelect = time.time()
                 whatReady = select.select([mySocket], [], [], timeLeft)
                 howLongInSelect = (time.time() - startedSelect)
+                
                 if whatReady[0] == []: # Timeout
                     tracelist1.append("* * * Request timed out.")
                     #Fill in start
@@ -84,6 +103,7 @@ def get_route(hostname):
                 recvPacket, addr = mySocket.recvfrom(1024)
                 timeReceived = time.time()
                 timeLeft = timeLeft - howLongInSelect
+                
                 if timeLeft <= 0:
                     tracelist1.append("* * * Request timed out.")
                     #Fill in start
@@ -94,19 +114,21 @@ def get_route(hostname):
 
             else:
                 #Fill in start
+                icmpHeader = recvPacket[20:28]
+                request_type, code, checksum, packetID, sequence = struct.unpack("bbHHh", icmpHeader)
+                
                 #Fetch the icmp type from the IP packet
                 #Fill in end
                 try: #try to fetch the hostname
                     #Fill in start
                     #Fill in end
-                except herror:   #if the host does not provide a hostname
+                except error:   #if the host does not provide a hostname
                     #Fill in start
                     #Fill in end
 
                 if types == 11:
                     bytes = struct.calcsize("d")
-                    timeSent = struct.unpack("d", recvPacket[28:28 +
-                    bytes])[0]
+                    timeSent = struct.unpack("d", recvPacket[28:28 +bytes])[0]
                     #Fill in start
                     #You should add your responses to your lists here
                     #Fill in end
@@ -119,6 +141,7 @@ def get_route(hostname):
                 elif types == 0:
                     bytes = struct.calcsize("d")
                     timeSent = struct.unpack("d", recvPacket[28:28 + bytes])[0]
+                    return
                     #Fill in start
                     #You should add your responses to your lists here and return your list if your destination IP is met
                     #Fill in end
@@ -126,7 +149,7 @@ def get_route(hostname):
                     #Fill in start
                     #If there is an exception/error to your if statements, you should append that to your list here
                     #Fill in end
-                break
+                    break
             finally:
                 mySocket.close()
 
