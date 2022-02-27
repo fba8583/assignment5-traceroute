@@ -155,8 +155,10 @@ def get_route(hostname):
                     #Fill in end
                     print("error")
                     break
-            finally:
+           finally:
                 mySocket.close()
 
 if __name__ == '__main__':
     get_route("google.co.il")
+    
+    
