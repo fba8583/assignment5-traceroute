@@ -101,6 +101,7 @@ def get_route(hostname):
                     #You should add the list above to your all traces list
                     #Fill in end
                 recvPacket, addr = mySocket.recvfrom(1024)
+                print (addr)
                 timeReceived = time.time()
                 timeLeft = timeLeft - howLongInSelect
                 
@@ -109,7 +110,7 @@ def get_route(hostname):
                     #Fill in start
                     #You should add the list above to your all traces list
                     #Fill in end
-            except timeout:
+            except socket.timeout:
                 continue
 
             else:
@@ -129,18 +130,21 @@ def get_route(hostname):
                 if types == 11:
                     bytes = struct.calcsize("d")
                     timeSent = struct.unpack("d", recvPacket[28:28 +bytes])[0]
+                    print (" %d   rtt=%.0f ms %s" % (ttl,(timeReceived -t)*1000, addr[0]))
                     #Fill in start
                     #You should add your responses to your lists here
                     #Fill in end
                 elif types == 3:
                     bytes = struct.calcsize("d")
                     timeSent = struct.unpack("d", recvPacket[28:28 + bytes])[0]
+                    print (" %d   rtt=%.0f ms %s" % (ttl,(timeReceived -t)*1000, addr[0]))
                     #Fill in start
                     #You should add your responses to your lists here 
                     #Fill in end
                 elif types == 0:
                     bytes = struct.calcsize("d")
                     timeSent = struct.unpack("d", recvPacket[28:28 + bytes])[0]
+                    print (" %d   rtt=%.0f ms %s" % (ttl,(timeReceived -timeSent)*1000, addr[0]))
                     return
                     #Fill in start
                     #You should add your responses to your lists here and return your list if your destination IP is met
@@ -149,6 +153,7 @@ def get_route(hostname):
                     #Fill in start
                     #If there is an exception/error to your if statements, you should append that to your list here
                     #Fill in end
+                    print("error")
                     break
             finally:
                 mySocket.close()
