@@ -4,7 +4,6 @@ import sys
 import struct
 import time
 import select
-import binascii
 import types
 
 ICMP_ECHO_REQUEST = 8
@@ -119,7 +118,7 @@ def get_route(hostname):
             else:
                 # Fill in start
                 # Fetch the icmp type from the IP packet
-
+                icmpHeader = recvPacket[20:28]
                 request_type, code, checksum, packetID, sequence = struct.unpack("bbHHh", icmpHeader)
 
                 # Fetch the icmp type from the IP packet
