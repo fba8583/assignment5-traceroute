@@ -1,3 +1,4 @@
+from socket import *
 import socket
 import os
 import sys
