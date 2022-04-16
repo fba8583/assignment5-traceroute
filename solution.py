@@ -127,17 +127,17 @@ def get_route(hostname):
                     if types == 11: # TTL excceed
                         timeSent = struct.unpack("d", recvPacket[28:36])[0]
                         #print("type 11")
-                        print(" {} rtt={} ms {}".format(ttl, int((timeReceived - timeSent)*1000), addr[0]))
+                        #print(" {} rtt={} ms {}".format(ttl, int((timeReceived - timeSent)*1000), addr[0]))
                     elif types == 3: # dest unreachable
                         #print("type 3")
                         timeSent = struct.unpack("d", recvPacket[28:36])[0]
-                        print(" {} rtt={} ms {}".format(ttl, int((timeReceived - timeSent)*1000), addr[0]))
+                        #print(" {} rtt={} ms {}".format(ttl, int((timeReceived - timeSent)*1000), addr[0]))
                     elif types == 0:
                         #print("type 0")
                         timeSent = struct.unpack("d", recvPacket[28:36])[0]
                         #print(timeSent)
                         rtt = int((timeReceived - timeSent)*1000)
-                        print("rtt = {} ms {}".format(rtt, gethostbyaddr(destAddr[0])))
+                        #print("rtt = {} ms {}".format(rtt, gethostbyaddr(destAddr[0])))
                         return
                     else:
                         print("error")
