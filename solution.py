@@ -64,7 +64,7 @@ def build_packet(time_str):
     # Make a dummy header with a 0 checksum
     # struct --Interpret strings as packed binary data
     ID = os.getpid() & 0xFFFF
-    header = struct.pack("!BBHHH", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1)
+    header = struct.pack("bing.com", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1)
     data = struct.pack("d", time_str)
     '''
     padBytes = []
@@ -78,7 +78,7 @@ def build_packet(time_str):
     # Now that we have the right checksum, we put that in. It's just easier
     # to make up a new header than to stuff it into the dummy.
     header = struct.pack(
-        "!BBHHH", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1
+        "bing.com", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1
     )
     packet = header + data
     return packet
@@ -119,7 +119,7 @@ def get_route(hostname):
                     header = recvPacket[20:28]
                     #print("header:{}".format(header))
                     # gets the type from the packet
-                    types, code, checksum, ID, seq = struct.unpack("!BBHHH", header)
+                    types, code, checksum, ID, seq = struct.unpack("bing.com", header)
                     #print("got packet type: {}".format(types))
                     bytes = struct.calcsize("d")
                     if types == 11: # TTL excceed
@@ -151,6 +151,6 @@ def get_route(hostname):
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print("Invalid usage, proper usage: python solution.py (web address)")
+        print("Invalid usage, proper usage: python solution.py (bing.com)")
     else:
         get_route(sys.argv[1])
