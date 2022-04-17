@@ -102,7 +102,7 @@ def get_route(hostname):
                     d = build_packet(time.time())
                     mySocket.sendto(d, (hostname, 0))
 
-                t= time.time()
+                t = time.time()
                 startedSelect = time.time()
                 whatReady = select.select([mySocket], [], [], timeLeft)
                 howLongInSelect = (time.time() - startedSelect)
