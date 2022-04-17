@@ -85,7 +85,7 @@ def build_packet(time_str):
 
 
 def get_route(hostname):
-    destAddr = gethostbyname(hostname)
+    destAddr = hostname
     timeLeft = TIMEOUT
     for ttl in range(1,MAX_HOPS):
         for tries in range(TRIES):
