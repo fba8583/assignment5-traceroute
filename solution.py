@@ -57,9 +57,7 @@ def build_packet(time_str):
     # packet to be sent was made, secondly the checksum was appended to the header and
     # then finally the complete packet was sent to the destination.
     # Make the header in a similar way to the ping exercise.
-    # Append checksum to the header.
-    # Don’t send the packet yet , just return the final packet in this function.
-    # So the function ending should look like this
+
 
     # Header is type (8), code (8),checksum (16), id (16), sequence (16)
     myChecksum = 0
