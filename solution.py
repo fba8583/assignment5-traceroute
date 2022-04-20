@@ -15,7 +15,7 @@ TRIES = 2
 def checksum(source_string):
     # In this function we make the checksum of our packet
     # hint: see icmpPing lab
-    countTo = (int(len(source_string)/2))*2
+    countTo = (len(str) / 2) * 2
     sum = 0
     count = 0
 
