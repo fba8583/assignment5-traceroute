@@ -119,7 +119,7 @@ def get_route(hostname):
                     header = recvPacket[20:28]
                     #print("header:{}".format(header))
                     # gets the type from the packet
-                    types, code, checksum, ID, seq = struct.unpack("bing.com", header)
+                    types, code, checksum, ID, seq = struct.unpack("google.com", header)
                     #print("got packet type: {}".format(types))
                     bytes = struct.calcsize("d")
                     if types == 11: # TTL excceed
@@ -151,6 +151,6 @@ def get_route(hostname):
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print("Invalid usage, proper usage: python solution.py (bing.com)")
+        print("Invalid usage, proper usage: python solution.py (google.com)")
     else:
         get_route(sys.argv[1])
