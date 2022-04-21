@@ -1,28 +1,5 @@
 
 
-    Home
-        Public
-
-Questions
-Tags
-Users
-Companies
-Collectives
-
-    Explore Collectives
-
-    Teams
-    Stack Overflow for Teams – Start collaborating and sharing organizational knowledge. 
-
-Creating an ICMP traceroute in Python
-Asked 10 years ago
-Modified 5 years, 3 months ago
-Viewed 5k times
-0
-2
-
-I am trying to implement an ICMP based Traceroute in Python. I found a very helpful guide ( https://blogs.oracle.com/ksplice/entry/learning_by_doing_writing_your ) that has allowed me to create a UDP based Traceroute so just needs modification. However I have looked around and am having trouble changing the send socket and making it work. Is anybody able to assist me?
-
  #!/usr/bin/python
 
 import socket
