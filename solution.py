@@ -8,50 +8,30 @@ import binascii
 ICMP_ECHO_REQUEST = 8
 MAX_HOPS = 30
 TIMEOUT = 2.0
-TRIES = 2
+TRIES = 1
 # The packet that we shall send to each router along the path is the ICMP echo
 # request packet, which is exactly what we had used in the ICMP ping exercise.
 # We shall use the same packet that we built in the Ping exercise
-def checksum(source_string):
-    # In this function we make the checksum of our packet
-    # hint: see icmpPing lab
-    countTo = (int(len(source_string)/2))*2
-    sum = 0
+
+def checksum(string):
+    csum = 0
+    countTo = (len(string)//2)*2
     count = 0
-
-    # Handle bytes in pairs (decoding as short ints)
-    loByte = 0
-    hiByte = 0
     while count < countTo:
-        if (sys.byteorder == "little"):
-            loByte = source_string[count]
-            hiByte = source_string[count + 1]
-        else:
-            loByte = source_string[count + 1]
-            hiByte = source_string[count]
-        try:     # For Python3
-            sum = sum + (hiByte * 256 + loByte)
-        except:  # For Python2
-            sum = sum + (ord(hiByte) * 256 + ord(loByte))
+        thisVal = (string[count + 1]) * 256 + (string[count])
+        csum += thisVal
+        csum &= 0xffffffff
         count += 2
-
-    # Handle last byte if applicable (odd-number of bytes)
-    # Endianness should be irrelevant in this case
-    if countTo < len(source_string): # Check for odd length
-        loByte = source_string[len(source_string)-1]
-        sum += loByte
-
-    sum &= 0xffffffff # Truncate sum to 32 bits (a variance from ping.c, which
-                      # uses signed ints, but overflow is unlikely in ping)
-
-    sum = (sum >> 16) + (sum & 0xffff)    # Add high 16 bits to low 16 bits
-    sum += (sum >> 16)                    # Add carry from above (if any)
-    answer = ~sum & 0xffff                # Invert and truncate to 16 bits
-    answer = htons(answer)
-
+    if countTo < len(string):
+        csum += (string[len(string) - 1])
+        csum &= 0xffffffff
+        
+    csum = (csum >> 16) + (csum & 0xffff)
+    csum = csum + (csum >> 16)
+    answer = ~csum
+    answer = answer & 0xffff
+    answer = answer >> 8| (answer << 8 & 0xff00)
     return answer
-
-
 def build_packet(time_str):
     # In the sendOnePing() method of the ICMP Ping exercise ,firstly the header of our
     # packet to be sent was made, secondly the checksum was appended to the header and
