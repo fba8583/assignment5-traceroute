@@ -15,7 +15,7 @@ TRIES = 2
 def checksum(source_string):
     # In this function we make the checksum of our packet
     # hint: see icmpPing lab
-    countTo = (len(str) / 2) * 2
+    countTo = (int(len(source_string)/2))*2
     sum = 0
     count = 0
 
@@ -57,14 +57,16 @@ def build_packet(time_str):
     # packet to be sent was made, secondly the checksum was appended to the header and
     # then finally the complete packet was sent to the destination.
     # Make the header in a similar way to the ping exercise.
-
+    # Append checksum to the header.
+    # Don’t send the packet yet , just return the final packet in this function.
+    # So the function ending should look like this
 
     # Header is type (8), code (8),checksum (16), id (16), sequence (16)
     myChecksum = 0
     # Make a dummy header with a 0 checksum
     # struct --Interpret strings as packed binary data
     ID = os.getpid() & 0xFFFF
-    header = struct.pack("google.com", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1)
+    header = struct.pack("!BBHHH", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1)
     data = struct.pack("d", time_str)
     '''
     padBytes = []
@@ -78,7 +80,7 @@ def build_packet(time_str):
     # Now that we have the right checksum, we put that in. It's just easier
     # to make up a new header than to stuff it into the dummy.
     header = struct.pack(
-        "google.com", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1
+        "!BBHHH", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1
     )
     packet = header + data
     return packet
@@ -102,7 +104,7 @@ def get_route(hostname):
                     d = build_packet(time.time())
                     mySocket.sendto(d, (hostname, 0))
 
-                t = time.time()
+                t= time.time()
                 startedSelect = time.time()
                 whatReady = select.select([mySocket], [], [], timeLeft)
                 howLongInSelect = (time.time() - startedSelect)
@@ -119,21 +121,21 @@ def get_route(hostname):
                     header = recvPacket[20:28]
                     #print("header:{}".format(header))
                     # gets the type from the packet
-                    types, code, checksum, ID, seq = struct.unpack("google.com", header)
+                    types, code, checksum, ID, seq = struct.unpack("!BBHHH", header)
                     #print("got packet type: {}".format(types))
                     bytes = struct.calcsize("d")
                     if types == 11: # TTL excceed
-                        timeSent = struct.unpack("d", recvPacket[28:28])[0]
+                        timeSent = struct.unpack("d", recvPacket[28:36])[0]
                         #print("type 11")
                         print(" {} rtt={} ms {}".format(ttl, int((timeReceived - timeSent)*1000), addr[0]))
                     elif types == 3: # dest unreachable
                         #print("type 3")
-                        timeSent = struct.unpack("d", recvPacket[28:28])[0]
+                        timeSent = struct.unpack("d", recvPacket[28:36])[0]
                         print(" {} rtt={} ms {}".format(ttl, int((timeReceived - timeSent)*1000), addr[0]))
                     elif types == 0:
                         #print("type 0")
-                        timeSent = struct.unpack("d", recvPacket[28:28])[0]
-                        print(timeSent)
+                        timeSent = struct.unpack("d", recvPacket[28:36])[0]
+                        #print(timeSent)
                         rtt = int((timeReceived - timeSent)*1000)
                         print("rtt = {} ms {}".format(rtt, gethostbyaddr(destAddr[0])))
                         return
@@ -141,28 +143,16 @@ def get_route(hostname):
                         print("error")
                         break
                 #print("got packet:{}".format(recvPacket))
-                    header = recvPacket[20:28]
-                    type, code, checksum, packID, seqNo = struct.unpack("bbHHh", header)
-                    if type == 0 and packID == ID:
-                            bytesInDouble = struct.calcsize("d")
-                            timeSent = struct.unpack("d", recvPacket[28:28 + bytesInDouble])[0]
-                            ttls = struct.unpack("c", recvPacket[8:9])[0]
-                            rtt = timeReceived - timeSent
-                            return (rtt, ttls)
-        
-        timeLeft = timeLeft - howLongInSelect
-        if timeLeft <= 0:
-            return "Request timed out."
-            if timeLeft <= 0:
+                if timeLeft <= 0:
                     print(" * * * Request timed out in time left!")
-                    except timeout:
-            continue
-      finally:
-                mySocket.close()
+            except timeout:
+                continue
+            finally:
+                    mySocket.close()
                     break
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print("Invalid usage, proper usage: python solution.py (google.com)")
+        print("Invalid usage, proper usage: python Traceroute.py (web address)")
     else:
         get_route(sys.argv[1])
