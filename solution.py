@@ -84,7 +84,7 @@ def build_packet(time_str):
     return packet
 
 
-def get_route():
+def get_route(hostname):
     destAddr = gethostbyname(hostname)
     timeLeft = TIMEOUT
     for ttl in range(1,MAX_HOPS):
@@ -141,12 +141,24 @@ def get_route():
                         print("error")
                         break
                 #print("got packet:{}".format(recvPacket))
-                if timeLeft <= 0:
+                    header = recvPacket[20:28]
+                    type, code, checksum, packID, seqNo = struct.unpack("bbHHh", header)
+                    if type == 0 and packID == ID:
+                            bytesInDouble = struct.calcsize("d")
+                            timeSent = struct.unpack("d", recvPacket[28:28 + bytesInDouble])[0]
+                            ttls = struct.unpack("c", recvPacket[8:9])[0]
+                            rtt = timeReceived - timeSent
+                            return (rtt, ttls)
+        
+        timeLeft = timeLeft - howLongInSelect
+        if timeLeft <= 0:
+            return "Request timed out."
+            if timeLeft <= 0:
                     print(" * * * Request timed out in time left!")
-            except timeout:
-                continue
-            finally:
-                    mySocket.close()
+                    except timeout:
+            continue
+      finally:
+                mySocket.close()
                     break
 
 if __name__ == '__main__':
