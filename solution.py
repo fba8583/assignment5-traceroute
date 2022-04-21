@@ -32,7 +32,8 @@ def checksum(string):
     answer = answer & 0xffff
     answer = answer >> 8| (answer << 8 & 0xff00)
     return answer
-def build_packet(time_str):
+
+def build_packet():
     # In the sendOnePing() method of the ICMP Ping exercise ,firstly the header of our
     # packet to be sent was made, secondly the checksum was appended to the header and
     # then finally the complete packet was sent to the destination.
@@ -41,13 +42,6 @@ def build_packet(time_str):
     # Don’t send the packet yet , just return the final packet in this function.
     # So the function ending should look like this
 
-    # Header is type (8), code (8),checksum (16), id (16), sequence (16)
-    myChecksum = 0
-    # Make a dummy header with a 0 checksum
-    # struct --Interpret strings as packed binary data
-    ID = os.getpid() & 0xFFFF
-    header = struct.pack("!BBHHH", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1)
-    data = struct.pack("d", time_str)
     '''
     padBytes = []
     startVal = 0x42
@@ -67,10 +61,14 @@ def build_packet(time_str):
 
 
 def get_route(hostname):
-    destAddr = gethostbyname(hostname)
+    
     timeLeft = TIMEOUT
+    tracelist1 = [] #This is your list to use when interacting with each trace
+    tracelist2 = [] #This is your list to contain all traces.
+    
     for ttl in range(1,MAX_HOPS):
         for tries in range(TRIES):
+            destAddr = gethostbyname(hostname)
 
 
             icmp = getprotobyname('icmp')
