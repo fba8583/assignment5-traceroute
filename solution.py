@@ -71,7 +71,7 @@ def get_route(hostname):
             #Fill in end
 
             mySocket.setsockopt((AF_INET, SOCK_RAW, getprotobyname("icmp"), IP_TTL, struct.pack('I', ttl))
-            mySocket.settimeout(TIMEOUT)
+            timeLeft = TIMEOUT
             try:
                 d = build_packet()
                 for 1 in range(3)
