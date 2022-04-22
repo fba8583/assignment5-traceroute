@@ -132,7 +132,7 @@ def get_route(hostname):
                     print ("rtt = {} ms {}".format(ttl, delay, ipaddr, hostname gethostbyaddr(destAddr[0])))
                     #You should add your responses to your lists here and return your list if your destination IP is met
                     #Fill in end
-                    return
+                    return tracelist1
                 else:
                     #Fill in start
                     #If there is an exception/error to your if statements, you should append that to your list here
@@ -140,7 +140,7 @@ def get_route(hostname):
                     #Fill in end
                 break
         if timeLeft <= 0:
-            print ("* * * Request timed out in time left!")
+            print tracelist1 ("* * * Request timed out in time left!")
     except timeout:
     continue
     finally:
