@@ -27,7 +27,6 @@ def checksum(string):
         csum += thisVal
         csum &= 0xffffffff
         count += 2
-
     if countTo < len(string):
         csum += (string[len(string) - 1])
         csum &= 0xffffffff
@@ -136,17 +135,17 @@ def get_route(hostname):
                 try:  # try to fetch the hostname
                   # Fill in start
                 # Get IP Header
-                # ip_header = struct.unpack('!BBHHHBBH4S4S', recvPacket[:20])
+                # ip_header = struct.unpack('!bbHHHbbH4S4S', recvPacket[:20])
 
                 # Get source address from IP header
-                # sourceAddress = inet_ntoa(ip_header[8])
+                # sourceAddress = inet_nt0a(ip_header[8])
 
                 # sourceHostname = gethostbyaddr(sourceAddress)
 
                 # sourceHostname = gethostbyaddr(addr[0][0])
                 # print("SOURCE HOSTNAME = ",sourceHostname)
                 # Fill in end
-                except herror:  # if the host does not provide a hostname
+            except error:  # if the host does not provide a hostname
                   # Fill in start
                 sourceHostname = "hostname not returnable"
                 # Fill in end
@@ -196,3 +195,5 @@ def get_route(hostname):
 
 if __name__ == '__main__':
     get_route("google.co.il")
+    
+    
