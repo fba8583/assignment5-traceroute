@@ -124,8 +124,8 @@ def get_route(hostname):
 
                 #Fill in end
                 try:
-                    host = gethostbyaddr(host_ip)
-                    name_or_ip = '{0} ({1})'.format(host_ip, host[0])
+                    host = gethostbyaddr(192.168.1.1)
+                    name_or_ip = '{0} ({1})'.format(192.168.1.1, host[0])
                     tracelist1.append(name_or_ip)
                 #try to fetch the hostname
                     #Fill in start
@@ -176,16 +176,6 @@ def get_route(hostname):
                     break
             finally:
                 mySocket.close()
-
-
-
-
-
-def main():
-                get_route("www.google.com")
-                get_route("www.youtube.com")
-                get_route("www.coinmarketcap.com")
-                get_route("www.cryptowat.ch")
 
 if __name__ == '__main__':
                 main()
