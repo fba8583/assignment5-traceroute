@@ -90,7 +90,7 @@ def get_route(hostname):
 
             #Fill in start
             # Make a raw socket named mySocket
-            icmp = getprotoname("icmp")
+            icmp = getprotobyname("icmp")
             mySocket = socket(AF_INET, SOCK_RAW, icmp)
             #Fill in end
 
@@ -144,7 +144,7 @@ def get_route(hostname):
                     #sourceHostname = gethostbyaddr(addr[0][0])
                     #print("SOURCE HOSTNAME = ",sourceHostname)
                     #Fill in end
-                except error:   #if the host does not provide a hostname
+                except herror:   #if the host does not provide a hostname
                     #Fill in start
                 sourceHostname = "hostname not returnable"
                     #Fill in end
@@ -158,7 +158,6 @@ def get_route(hostname):
                     tracelist1.append([str(ttl), rtt, str(addr[0]), sourceHostname])
                     #print("List 1", tracelist1)
                     tracelist2.append(tracelist1[-1])
-                    return tracelist2
                     #print("List 2", tracelist2)
                     
                     #Fill in end
@@ -193,4 +192,4 @@ def get_route(hostname):
                 mySocket.close()
 
 if __name__ == '__main__':
-    get_route("google.com")
+    get_route("google.co.il")
