@@ -127,73 +127,73 @@ def get_route(hostname):
                 # Fetch the icmp type from the IP packet
 
                 # This is entire ICMP header
-                icmp_type, icmp_code, icmp_checksum, icmp_id, icmp_seq, timeSent = struct.unpack('bbHHhd',recvPacket[20:36])
+                icmp_type, icmp_code, icmp_checksum, icmp_id, icmp_seq, timeSent = struct.unpack('bbHHhd',
+                                                                                                 recvPacket[20:36])
                 # print ("MY TIME SENT = ", timeSent)
                 types = struct.unpack('b', recvPacket[20:21])
                 # print ("TYPES = ", types)
                 # Fill in end
                 try:  # try to fetch the hostname
-                  # Fill in start
-                # Get IP Header
-                # ip_header = struct.unpack('!bbHHHbbH4S4S', recvPacket[:20])
+            # Fill in start
+            # Get IP Header
+            # ip_header = struct.unpack('!bbHHHbbH4S4S', recvPacket[:20])
 
-                # Get source address from IP header
-                # sourceAddress = inet_nt0a(ip_header[8])
+            # Get source address from IP header
+            # sourceAddress = inet_nt0a(ip_header[8])
 
-                # sourceHostname = gethostbyaddr(sourceAddress)
+            # sourceHostname = gethostbyaddr(sourceAddress)
 
-                # sourceHostname = gethostbyaddr(addr[0][0])
-                # print("SOURCE HOSTNAME = ",sourceHostname)
+            # sourceHostname = gethostbyaddr(addr[0][0])
+            # print("SOURCE HOSTNAME = ",sourceHostname)
+            # Fill in end
+            except error:  # if the host does not provide a hostname
+            # Fill in start
+            sourceHostname = "hostname not returnable"
+            # Fill in end
+
+            if types == 11:
+                bytes = struct.calcsize("d")
+                timeSent = struct.unpack("d", recvPacket[28:28 + bytes])[0]
+                # Fill in start
+                # You should add your responses to your lists
+                rtt = str(round(timeSent * 1000)) + "ms"
+                tracelist1.append([str(ttl), rtt, str(addr[0]), sourceHostname])
+                # print("List 1", tracelist1)
+                tracelist2.append(tracelist1[-1])
+                # print("List 2", tracelist2)
+
                 # Fill in end
-    except error:  # if the host does not provide a hostname
-                  # Fill in start
-                sourceHostname = "hostname not returnable"
+            elif types == 3:
+                bytes = struct.calcsize("d")
+                timeSent = struct.unpack("d", recvPacket[28:28 + bytes])[0]
+                # Fill in start
+                rtt = "*"
+                # You should add your responses to your lists here
+                tracelist1.append([str(ttl), rtt, 'Request timed out'])
+                tracelist2.append(tracelist1[-1])
+                return tracelist2
                 # Fill in end
+            elif types == 0:
+                bytes = struct.calcsize("d")
+                timeSent = struct.unpack("d", recvPacket[28:28 + bytes])[0]
+                # Fill in start
+                rtt = str(round((t - timeSent) * 1000)) + "ms"
+                # You should add your responses to your lists here and return your list if your destination IP is met
+                tracelist1.append([str(ttl), rtt, str(addr[0]), sourceHostname])
+                tracelist2.append(tracelist1[-1])
+                return tracelist2
+                # Fill in end
+            else:
+                # Fill in start
 
-                if types == 11:
-                    bytes = struct.calcsize("d")
-                    timeSent = struct.unpack("d", recvPacket[28:28 + bytes])[0]
-                    # Fill in start
-                    # You should add your responses to your lists
-                    rtt = str(round(timeSent * 1000)) + "ms"
-                    tracelist1.append([str(ttl), rtt, str(addr[0]), sourceHostname])
-                    # print("List 1", tracelist1)
-                    tracelist2.append(tracelist1[-1])
-                    # print("List 2", tracelist2)
-
-                    # Fill in end
-                elif types == 3:
-                    bytes = struct.calcsize("d")
-                    timeSent = struct.unpack("d", recvPacket[28:28 + bytes])[0]
-                    # Fill in start
-                    rtt = "*"
-                    # You should add your responses to your lists here
-                    tracelist1.append([str(ttl), rtt, 'Request timed out'])
-                    tracelist2.append(tracelist1[-1])
-                    return tracelist2
-                    # Fill in end
-                elif types == 0:
-                    bytes = struct.calcsize("d")
-                    timeSent = struct.unpack("d", recvPacket[28:28 + bytes])[0]
-                    # Fill in start
-                    rtt = str(round((t - timeSent) * 1000)) + "ms"
-                    # You should add your responses to your lists here and return your list if your destination IP is met
-                    tracelist1.append([str(ttl), rtt, str(addr[0]), sourceHostname])
-                    tracelist2.append(tracelist1[-1])
-                    return tracelist2
-                    # Fill in end
-                else:
-                    # Fill in start
-
-                    # If there is an exception/error to your if statements, you should append that to your list here
-                    tracelist1.append([ttl, '*', 'Error Occurred'])
-                    # Fill in end
-                break
-            finally:
-                mySocket.close()
+                # If there is an exception/error to your if statements, you should append that to your list here
+                tracelist1.append([ttl, '*', 'Error Occurred'])
+                # Fill in end
+            break
+        finally:
+        mySocket.close()
 
 
 if __name__ == '__main__':
     get_route("google.co.il")
-    
-    
+
