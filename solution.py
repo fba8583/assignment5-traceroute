@@ -144,7 +144,7 @@ def get_route(hostname):
                     #sourceHostname = gethostbyaddr(addr[0][0])
                     #print("SOURCE HOSTNAME = ",sourceHostname)
                     #Fill in end
-                except herror:   #if the host does not provide a hostname
+                except error:   #if the host does not provide a hostname
                     #Fill in start
                 sourceHostname = "hostname unreturnable"
                     #Fill in end
