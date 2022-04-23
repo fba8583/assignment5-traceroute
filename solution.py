@@ -1,269 +1,269 @@
-﻿from socket import *
+                    ﻿from socket import *
 
-import os
+                    import os
 
-import sys
+                    import sys
 
-import struct
+                    import struct
 
-import time
+                    import time
 
-import select
+                    import select
 
-import binascii
+                    import binascii
 
-ICMP_ECHO_REQUEST = 8
+                    ICMP_ECHO_REQUEST = 8
 
-MAX_HOPS = 30
+                    MAX_HOPS = 30
 
-TIMEOUT = 2.0
+                    TIMEOUT = 2.0
 
-TRIES = 2
+                    TRIES = 2
 
-# The packet that we shall send to each router along the path is the ICMP echo
+                    # The packet that we shall send to each router along the path is the ICMP echo
 
-# request packet, which is exactly what we had used in the ICMP ping exercise.
+                    # request packet, which is exactly what we had used in the ICMP ping exercise.
 
-# We shall use the same packet that we built in the Ping exercise
+                    # We shall use the same packet that we built in the Ping exercise
 
-def checksum(str):
+                    def checksum(str):
 
-# In this function we make the checksum of our packet
+                    # In this function we make the checksum of our packet
 
-# hint: see icmpPing lab
+                    # hint: see icmpPing lab
 
-csum = 0
+                    csum = 0
 
-countTo = (len(str) // 2) * 2
+                    countTo = (len(str) // 2) * 2
 
-count = 0
+                    count = 0
 
-while count < countTo:
+                    while count < countTo:
 
-thisVal = str[count+1] * 256 + str[count]
+                    thisVal = str[count+1] * 256 + str[count]
 
-csum = csum + thisVal
+                    csum = csum + thisVal
 
-csum = csum & 0xffffffff
+                    csum = csum & 0xffffffff
 
-count = count + 2
+                    count = count + 2
 
-if countTo < len(str):
+                    if countTo < len(str):
 
-csum = csum + str[len(str) - 1]
+                    csum = csum + str[len(str) - 1]
 
-csum = csum & 0xffffffff
+                    csum = csum & 0xffffffff
 
-csum = (csum >> 16) + (csum & 0xffff)
+                    csum = (csum >> 16) + (csum & 0xffff)
 
-csum = csum + (csum >> 16)
+                    csum = csum + (csum >> 16)
 
-answer = ~csum
+                    answer = ~csum
 
-answer = answer & 0xffff
+                    answer = answer & 0xffff
 
-answer = answer >> 8 | (answer << 8 & 0xff00)
+                    answer = answer >> 8 | (answer << 8 & 0xff00)
 
-return answer
+                    return answer
 
-def build_packet():
+                    def build_packet():
 
-# In the sendOnePing() method of the ICMP Ping exercise, firstly the header of our
+                    # In the sendOnePing() method of the ICMP Ping exercise, firstly the header of our
 
-# packet to be sent was made, secondly the checksum was appended to the header and
+                    # packet to be sent was made, secondly the checksum was appended to the header and
 
-# then finally the complete packet was sent to the destination.
+                    # then finally the complete packet was sent to the destination.
 
-# Make the header in a similar way to the ping exercise.
+                    # Make the header in a similar way to the ping exercise.
 
-# Append checksum to the header.
+                    # Append checksum to the header.
 
-# Don't send the packet yet , just return the final packet in this function.
+                    # Don't send the packet yet , just return the final packet in this function.
 
-# So the function ending should look like this packet = header + data return packet
+                    # So the function ending should look like this packet = header + data return packet
 
-ID = os.getpid() & 0xFFFF #Return the current process i
+                    ID = os.getpid() & 0xFFFF #Return the current process i
 
-# Header is type (8), code (8), checksum (16), id (16), sequence (16)
+                    # Header is type (8), code (8), checksum (16), id (16), sequence (16)
 
-myChecksum = 0
+                    myChecksum = 0
 
-# Make a dummy header with a 0 checksum.
+                    # Make a dummy header with a 0 checksum.
 
-# struct -- Interpret strings as packed binary data
+                    # struct -- Interpret strings as packed binary data
 
-header = struct.pack("bbHHh", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1)
+                    header = struct.pack("bbHHh", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1)
 
-data = struct.pack("d", time.time())
+                    data = struct.pack("d", time.time())
 
-# Calculate the checksum on the data and the dummy header.
+                    # Calculate the checksum on the data and the dummy header.
 
-myChecksum = checksum(header + data)
+                    myChecksum = checksum(header + data)
 
-# Get the right checksum, and put in the header
+                    # Get the right checksum, and put in the header
 
-if sys.platform == 'darwin':
+                    if sys.platform == 'darwin':
 
-myChecksum = htons(myChecksum) & 0xffff
+                    myChecksum = htons(myChecksum) & 0xffff
 
-#Convert 16-bit integers from host to network byte order.
+                    #Convert 16-bit integers from host to network byte order.
 
-else:
+                    else:
 
-myChecksum = htons(myChecksum)
+                    myChecksum = htons(myChecksum)
 
-header = struct.pack("bbHHh", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1)
+                    header = struct.pack("bbHHh", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1)
 
-packet = header + data
+                    packet = header + data
 
-return packet
+                    return packet
 
-def get_route(hostname):
+                    def get_route(hostname):
 
-#timeLeft = TIMEOUT # Is this line in the wrong place? I changed it to three lines below......
+                    #timeLeft = TIMEOUT # Is this line in the wrong place? I changed it to three lines below......
 
-print("Begin traceroute to " + hostname + "(" + gethostbyname(hostname) + ")......\n")
+                    print("Begin traceroute to " + hostname + "(" + gethostbyname(hostname) + ")......\n")
 
-for ttl in range(1,MAX_HOPS):
+                    for ttl in range(1,MAX_HOPS):
 
-for tries in range(TRIES):
+                    for tries in range(TRIES):
 
-timeLeft = TIMEOUT
+                    timeLeft = TIMEOUT
 
-destAddr = gethostbyname(hostname)
+                    destAddr = gethostbyname(hostname)
 
-#Fill in start
+                    #Fill in start
 
-# Make a raw socket named mySocket
+                    # Make a raw socket named mySocket
 
-icmp = getprotobyname("icmp")
+                    icmp = getprotobyname("icmp")
 
-try:
+                    try:
 
-mySocket = socket(AF_INET, SOCK_RAW, icmp)
+                    mySocket = socket(AF_INET, SOCK_RAW, icmp)
 
-except error as msg:
+                    except error as msg:
 
-print("Socket create error:", msg)
+                    print("Socket create error:", msg)
 
-#Fill in end
+                    #Fill in end
 
-mySocket.setsockopt(IPPROTO_IP, IP_TTL, struct.pack('I', ttl))
+                    mySocket.setsockopt(IPPROTO_IP, IP_TTL, struct.pack('I', ttl))
 
-mySocket.settimeout(TIMEOUT)
+                    mySocket.settimeout(TIMEOUT)
 
-try:
+                    try:
 
-d = build_packet()
+                    d = build_packet()
 
-mySocket.sendto(d, (hostname, 0))
+                    mySocket.sendto(d, (hostname, 0))
 
-t = time.time()
+                    t = time.time()
 
-startedSelect = time.time()
+                    startedSelect = time.time()
 
-whatReady = select.select([mySocket], [], [], timeLeft)
+                    whatReady = select.select([mySocket], [], [], timeLeft)
 
-howLongInSelect = (time.time() - startedSelect)
+                    howLongInSelect = (time.time() - startedSelect)
 
-if whatReady[0] == []: # Timeout
+                    if whatReady[0] == []: # Timeout
 
-print("\t*\t\t*\t\t*\t\tRequest timed out.")
+                    print("\t*\t\t*\t\t*\t\tRequest timed out.")
 
-recvPacket, addr = mySocket.recvfrom(1024)
+                    recvPacket, addr = mySocket.recvfrom(1024)
 
-timeReceived = time.time()
+                    timeReceived = time.time()
 
-timeLeft = timeLeft - howLongInSelect
+                    timeLeft = timeLeft - howLongInSelect
 
-if timeLeft <= 0:
+                    if timeLeft <= 0:
 
-print("\t*\t*\t*\Request timed out.")
+                    print("\t*\t*\t*\Request timed out.")
 
-except timeout:
+                    except timeout:
 
-continue
+                    continue
 
-else:
+                    else:
 
-#Fill in start
+                    #Fill in start
 
-# Fetch the icmp type from the IP packet
+                    # Fetch the icmp type from the IP packet
 
-# get TTL
+                    # get TTL
 
-ttl = recvPacket[8]   
+                    ttl = recvPacket[8]   
 
-# get ICMP info
+                    # get ICMP info
 
-type, pongCode, pongChecksum, pongID, pongSequence = struct.unpack("bbHHh", recvPacket[20:28])
+                    type, pongCode, pongChecksum, pongID, pongSequence = struct.unpack("bbHHh", recvPacket[20:28])
 
-# get RTT in ms
+                    # get RTT in ms
 
-RTT = (timeReceived - struct.unpack("d", recvPacket[28:36])[0]) * 1000
+                    RTT = (timeReceived - struct.unpack("d", recvPacket[28:36])[0]) * 1000
 
-# try to get hostname of each router in the path
+                    # try to get hostname of each router in the path
 
-try:
+                    try:
 
-routerHostname = gethostbyaddr(addr[0])[0]
+                    routerHostname = gethostbyaddr(addr[0])[0]
 
-except herror as emsg:
+                    except herror as emsg:
 
-routerHostname = "(Could not look up name:" + str(emsg) +")"
+                    routerHostname = "(Could not look up name:" + str(emsg) +")"
 
-#Fill in end
+                    #Fill in end
 
-if type == 11:
+                    if type == 11:
 
-bytes = struct.calcsize("d")
+                    bytes = struct.calcsize("d")
 
-timeSent = struct.unpack("d", recvPacket[28:28 + bytes])[0]
+                    timeSent = struct.unpack("d", recvPacket[28:28 + bytes])[0]
 
-print("TTL = %d\trtt=%.0f ms\tIP = %s\tHost:%s" %(ttl, (timeReceived -t)*1000, addr[0], routerHostname))
+                    print("TTL = %d\trtt=%.0f ms\tIP = %s\tHost:%s" %(ttl, (timeReceived -t)*1000, addr[0], routerHostname))
 
-elif type == 3:
+                    elif type == 3:
 
-bytes = struct.calcsize("d")
+                    bytes = struct.calcsize("d")
 
-timeSent = struct.unpack("d", recvPacket[28:28 + bytes])[0]
+                    timeSent = struct.unpack("d", recvPacket[28:28 + bytes])[0]
 
-print("TTL = %d\trtt=%.0f ms\tIP = %s\tHost:%s" %(ttl, (timeReceived-t)*1000, addr[0], routerHostname))
+                    print("TTL = %d\trtt=%.0f ms\tIP = %s\tHost:%s" %(ttl, (timeReceived-t)*1000, addr[0], routerHostname))
 
-elif type == 0:
+                    elif type == 0:
 
-bytes = struct.calcsize("d")
+                    bytes = struct.calcsize("d")
 
-timeSent = struct.unpack("d", recvPacket[28:28 + bytes])[0]
+                    timeSent = struct.unpack("d", recvPacket[28:28 + bytes])[0]
 
-print("TTL = %d\trtt=%.0f ms\tIP = %s\tHost:%s" %(ttl, (timeReceived - timeSent)*1000, addr[0], routerHostname))
+                    print("TTL = %d\trtt=%.0f ms\tIP = %s\tHost:%s" %(ttl, (timeReceived - timeSent)*1000, addr[0], routerHostname))
 
-return
+                    return
 
-else:
+                    else:
 
-print("error")
+                    print("error")
 
-break
+                    break
 
-finally:
+                    finally:
 
-mySocket.close()
+                    mySocket.close()
 
-# traceroute four different host
+                    # traceroute four different host
 
-get_route("www.baidu.com")
+                    get_route("www.baidu.com")
 
-print("Traceroute Finished!\n\n\n\n\n\n")
+                    print("Traceroute Finished!\n\n\n\n\n\n")
 
-get_route("www.google.com")
+                    get_route("www.google.com")
 
-print("Traceroute Finished!\n\n\n\n\n\n")
+                    print("Traceroute Finished!\n\n\n\n\n\n")
 
-get_route("www.tsinghua.edu.cn")
+                    get_route("www.tsinghua.edu.cn")
 
-print("Traceroute Finished!\n\n\n\n\n\n")
+                    print("Traceroute Finished!\n\n\n\n\n\n")
 
-get_route("www.github.com")
+                    get_route("www.github.com")
 
-print("Traceroute Finished!\n\n\n\n\n\n")
+                    print("Traceroute Finished!\n\n\n\n\n\n")
