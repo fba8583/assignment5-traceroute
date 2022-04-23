@@ -158,6 +158,7 @@ def get_route(hostname):
                     tracelist1.append([str(ttl), rtt, str(addr[0]), sourceHostname])
                     #print("List 1", tracelist1)
                     tracelist2.append(tracelist1[-1])
+                    return tracelist2
                     #print("List 2", tracelist2)
                     
                     #Fill in end
@@ -169,6 +170,7 @@ def get_route(hostname):
                     #You should add your responses to your lists here
                     tracelist1.append([str(ttl), rtt, 'Request timed out'])
                     tracelist2.append(tracelist1[-1])
+                    return tracelist2
                     #Fill in end
                 elif types == 0:
                     bytes = struct.calcsize("d")
@@ -178,6 +180,7 @@ def get_route(hostname):
                     #You should add your responses to your lists here and return your list if your destination IP is met
                     tracelist1.append([str(ttl), rtt, str(addr[0]), sourceHostname])
                     tracelist2.append(tracelist1[-1])
+                    return tracelist2
                     #Fill in end
                 else:
                     #Fill in start
